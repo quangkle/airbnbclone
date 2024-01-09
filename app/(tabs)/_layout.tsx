@@ -66,11 +66,7 @@ const Layout = () => {
         options={{
           tabBarLabel: "Inbox",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons
-              name="person-circle-outline"
-              color={color}
-              size={size}
-            />
+            <Ionicons name="person-circle-outline" color={color} size={size} />
           ),
         }}
       />
