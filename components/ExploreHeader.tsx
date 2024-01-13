@@ -1,9 +1,9 @@
 import { View, Text, StyleSheet } from 'react-native';
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { Link } from 'expo-router';
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { Ionicons } from '@expo/vector-icons';
+import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import Colors from '@/constants/Colors';
 
 const categories = [
@@ -38,27 +38,48 @@ const categories = [
 ]
 
 const ExploreHeader = () => {
-  return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
-        <View style={styles.container}>
-            <View style={styles.actionRow}>
-                <Link href={"/(modals)/booking"} asChild>
-                    <TouchableOpacity style={styles.searchBtn}>
-                        <Ionicons name="search" size={24} />
-                        <View>
-                            <Text style={{ fontFamily: "mon-sb" }}>Where to?</Text>
-                            <Text style={{ fontFamily: "mon", color: Colors.grey }}>Anywhere • Any week</Text>
-                        </View>
-                    </TouchableOpacity>
-                </Link>
+    const itemRef = useRef<Array<TouchableOpacity | null>>([]);
+    const [activeCategoryIndex, selectCategoryIndex] = useState(0);
 
-                <TouchableOpacity style={styles.filterBtn}>
-                    <Ionicons name="options-outline" size={24} />
-                </TouchableOpacity>
+    return (
+        <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+            <View style={styles.container}>
+                <View style={styles.actionRow}>
+                    <Link href={"/(modals)/booking"} asChild>
+                        <TouchableOpacity style={styles.searchBtn}>
+                            <Ionicons name="search" size={24} />
+                            <View>
+                                <Text style={{ fontFamily: "mon-sb" }}>Where to?</Text>
+                                <Text style={{ fontFamily: "mon", color: Colors.grey }}>Anywhere • Any week</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </Link>
+
+                    <TouchableOpacity style={styles.filterBtn}>
+                        <Ionicons name="options-outline" size={24} />
+                    </TouchableOpacity>
+                </View>
+
+                <ScrollView horizontal showsHorizontalScrollIndicator={false}
+                    contentContainerStyle={styles.scrollViewContainer}
+                >
+                    {categories.map((item, index) => (
+                        <TouchableOpacity
+                            onPress={() => selectCategoryIndex(index)}
+                            key={index}
+                            ref={(el) => itemRef.current[index] = el}
+                            style={activeCategoryIndex === index ? styles.categoriesBtnActive : styles.categoriesBtn}
+                        >
+                            <MaterialIcons size={24} name={item.icon as any}
+                                color={activeCategoryIndex === index ? "#000" : Colors.grey}
+                            />
+                            <Text style={activeCategoryIndex === index ? styles.categoryTextActive : styles.categoryText}>{item.name}</Text>
+                        </TouchableOpacity>
+                    ))}
+                </ScrollView>
             </View>
-        </View>
-    </SafeAreaView>
-  )
+        </SafeAreaView>
+    )
 }
 
 const styles = StyleSheet.create({
@@ -81,7 +102,7 @@ const styles = StyleSheet.create({
         borderColor: "#c2c2c2",
         borderWidth: StyleSheet.hairlineWidth,
         flex: 1,
-        gap:10,
+        gap: 10,
         padding: 14,
         borderRadius: 30,
         backgroundColor: "#fff",
@@ -100,7 +121,36 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: Colors.grey,
         borderRadius: 24
-    }
+    },
+    scrollViewContainer: {
+        alignItems: "center",
+        gap: 20,
+        paddingHorizontal: 16
+    },
+    categoriesBtn: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        paddingBottom: 8,
+    },
+    categoriesBtnActive: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        paddingBottom: 8,
+        borderBottomColor: "#000",
+        borderBottomWidth: 2,
+    },
+    categoryText: {
+        fontSize: 14,
+        fontFamily: 'mon-sb',
+        color: Colors.grey,
+    },
+    categoryTextActive: {
+        fontSize: 14,
+        fontFamily: 'mon-sb',
+        color: '#000',
+    },
 })
 
 export default ExploreHeader
