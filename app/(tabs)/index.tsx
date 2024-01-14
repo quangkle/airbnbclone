@@ -9,7 +9,8 @@ import ListingsMap from "@/components/ListingsMap";
 
 const Page = () => {
   const [category, setCategory] = useState("Tiny homes");
-  const items = useMemo(() => listingsData as any, [])
+  const items = useMemo(() => listingsData as any, []);
+  const geoItems = useMemo(() => listingsGeoData, []);
 
   const onDataChanged = (category: string) => {
     setCategory(category);
@@ -24,7 +25,7 @@ const Page = () => {
       />
 
       {/* <Listings items={items} category={category} /> */}
-      <ListingsMap items={[]} />
+      <ListingsMap items={geoItems} />
     </View>
   );
 };
