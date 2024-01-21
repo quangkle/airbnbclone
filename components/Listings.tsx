@@ -9,11 +9,16 @@ import Animated, { FadeInRight, FadeOutLeft } from "react-native-reanimated";
 interface Props {
   items: any[];
   category: string;
+  refresh: number;
 }
 
-const Listings = ({ items, category }: Props) => {
+const Listings = ({ items, category, refresh }: Props) => {
   const [loading, setLoading] = useState(false);
   const listRef = useRef<FlatList>(null);
+
+  useEffect(() => {
+    listRef.current?.scrollToOffset({ offset: 0, animated: true });
+  }, [refresh]);
 
   useEffect(() => {
     console.log("RELOAD LISTING: ", category);
