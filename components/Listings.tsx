@@ -1,10 +1,11 @@
-import { View, FlatList, ListRenderItem, TouchableOpacity, StyleSheet, Image, Text } from "react-native";
+import { View, ListRenderItem, TouchableOpacity, StyleSheet, Image, Text } from "react-native";
 import React, { useEffect, useRef, useState } from "react";
 import { defaultStyles } from "@/constants/Styles";
 import { Link } from "expo-router";
 import { Listing } from "@/interfaces/Listing";
 import { Ionicons } from "@expo/vector-icons";
 import Animated, { FadeInRight, FadeOutLeft } from "react-native-reanimated";
+import { BottomSheetFlatList, BottomSheetFlatListMethods } from "@gorhom/bottom-sheet";
 
 interface Props {
   items: any[];
@@ -14,14 +15,13 @@ interface Props {
 
 const Listings = ({ items, category, refresh }: Props) => {
   const [loading, setLoading] = useState(false);
-  const listRef = useRef<FlatList>(null);
+  const listRef = useRef<BottomSheetFlatListMethods>(null);
 
   useEffect(() => {
     listRef.current?.scrollToOffset({ offset: 0, animated: true });
   }, [refresh]);
 
   useEffect(() => {
-    console.log("RELOAD LISTING: ", category);
     setLoading(true);
 
     setTimeout(() => {
@@ -61,10 +61,11 @@ const Listings = ({ items, category, refresh }: Props) => {
 
   return (
     <View style={defaultStyles.container}>
-      <FlatList
+      <BottomSheetFlatList
         renderItem={renderRow}
         ref={listRef}
         data={loading ? [] : items}
+        ListHeaderComponent={<Text style={styles.headerText}>{items.length} homes</Text>}
       />
     </View>
   );
@@ -80,6 +81,12 @@ const styles = StyleSheet.create({
     width: "100%",
     height: 300,
     borderRadius: 10,
+  },
+  headerText: {
+    textAlign: "center",
+    fontFamily: "mon-sb",
+    fontSize: 16,
+    marginTop: 4
   }
 });
 

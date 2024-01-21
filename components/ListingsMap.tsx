@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet } from "react-native";
-import React from "react";
+import React, { memo } from "react";
 import { Marker, PROVIDER_GOOGLE, Region } from "react-native-maps";
 import { useRouter } from "expo-router";
 import MapView from "react-native-map-clustering";
@@ -15,7 +15,7 @@ const INITIAL_REGION: Region = {
   longitudeDelta: 9,
 };
 
-const ListingsMap = ({ items }: Props) => {
+const ListingsMap = memo(({ items }: Props) => {
   const router = useRouter();
   const onMarkerSelected = (item: ListingGeo) => {
     router.push(`/listing/${item.properties.id}`);
@@ -35,11 +35,13 @@ const ListingsMap = ({ items }: Props) => {
         }}
       >
         <View style={styles.marker}>
-          <Text style={{
-            color: "#000",
-            textAlign: "center",
-            fontFamily: "mon-sb",
-          }}>
+          <Text
+            style={{
+              color: "#000",
+              textAlign: "center",
+              fontFamily: "mon-sb",
+            }}
+          >
             {points}
           </Text>
         </View>
@@ -78,7 +80,7 @@ const ListingsMap = ({ items }: Props) => {
       </MapView>
     </View>
   );
-};
+});
 
 const styles = StyleSheet.create({
   container: {
