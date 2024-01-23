@@ -14,6 +14,7 @@ import { Link } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { defaultStyles } from "@/constants/Styles";
 import Colors from "@/constants/Colors";
+import * as ImagePicker from "expo-image-picker";
 
 const Page = () => {
   const { signOut, isSignedIn } = useAuth();
@@ -32,10 +33,35 @@ const Page = () => {
   }, [user]);
 
   const onSaveUser = async () => {
-    setEditing(false);
+    if (!firstName || !lastName) return;
+
+    try {
+      await user?.update({
+        firstName,
+        lastName,
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setEditing(false);
+    }
   };
 
-  const onCaptureImage = async () => {};
+  const onCaptureImage = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 0.75,
+      base64: true,
+    });
+
+    if (!result.canceled) {
+      const base64 = `data:image/png;base64,${result.assets[0].base64}`;
+      user?.setProfileImage({
+        file: base64,
+      })
+    }
+  };
 
   return (
     <SafeAreaView style={defaultStyles.container}>
