@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { BlurView } from "expo-blur";
 import Animated, { SlideInDown } from "react-native-reanimated";
 import { defaultStyles } from "@/constants/Styles";
@@ -8,6 +8,8 @@ import { Ionicons } from "@expo/vector-icons";
 
 const Page = () => {
   const onClearAll = () => {};
+  const [openCard, setOpenCard] = useState(0);
+  const [selectedPlace, setSelectedPlace] = useState(0); 
 
   return (
     <BlurView intensity={70} style={styles.container}>
