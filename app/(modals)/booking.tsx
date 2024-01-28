@@ -24,14 +24,39 @@ import DatePicker from "react-native-modern-datepicker";
 const AnimatedTouchableOpacity =
   Animated.createAnimatedComponent(TouchableOpacity);
 
+const guestGroups = [
+  {
+    name: "Adults",
+    text: "Ages 13 or above",
+    count: 0,
+  },
+  {
+    name: "Children",
+    text: "Age 2-12",
+    count: 0,
+  },
+  {
+    name: "Infants",
+    text: "Under 2",
+    count: 0,
+  },
+  {
+    name: "Pets",
+    text: "Pets allowed",
+    count: 0,
+  },
+];
+
 const Page = () => {
   const [openCard, setOpenCard] = useState(0);
   const [selectedPlace, setSelectedPlace] = useState(0);
+  const [groups, setGroups] = useState(guestGroups);
   const today = new Date().toISOString().substring(0, 10);
 
   const onClearAll = () => {
     setSelectedPlace(0);
     setOpenCard(0);
+    setGroups(guestGroups);
   };
 
   return (
@@ -129,12 +154,17 @@ const Page = () => {
               When's your trip?
             </Animated.Text>
             <Animated.View style={styles.cardBody}>
-              <DatePicker current={today} selected={today} mode="calendar" options={{
-                defaultFont: "mon",
-                headerFont: "mon-sb",
-                borderColor: "transparent",
-                mainColor: Colors.primary,
-              }}/>
+              <DatePicker
+                current={today}
+                selected={today}
+                mode="calendar"
+                options={{
+                  defaultFont: "mon",
+                  headerFont: "mon-sb",
+                  borderColor: "transparent",
+                  mainColor: Colors.primary,
+                }}
+              />
             </Animated.View>
           </>
         )}
@@ -155,11 +185,66 @@ const Page = () => {
         )}
 
         {openCard === 2 && (
-          <Animated.View>
+          <>
             <Animated.Text entering={FadeIn} style={styles.cardHeader}>
               Who's coming?
             </Animated.Text>
-          </Animated.View>
+            <Animated.View style={styles.cardBody}>
+              {groups.map((item, index) => (
+                <View key={index} style={[styles.cardGuestItem, index + 1 < guestGroups.length ? styles.cardItemBorder : null]}>
+                  <View>
+                    <Text style={{fontFamily: "mon-sb"}}>{item.name}</Text>
+                    <Text style={{fontFamily: "mon"}}>{item.text}</Text>
+                  </View>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      gap: 10,
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <TouchableOpacity onPress={() => {
+                      const newGroups = [...groups];
+                      newGroups[index].count = newGroups[index].count > 0 ? newGroups[index].count - 1 : 0;
+                      setGroups(newGroups);
+                    }}>
+                      <Ionicons
+                        name="remove-circle-outline"
+                        size={26}
+                        color={
+                          groups[index].count > 0 ? Colors.grey : "#cdcdcd"
+                        }
+                      />
+                    </TouchableOpacity>
+                    <Text
+                      style={{
+                        fontFamily: "mon",
+                        fontSize: 16,
+                        minWidth: 18,
+                        textAlign: "center",
+                      }}
+                    >
+                      {item.count}
+                    </Text>
+                    <TouchableOpacity
+                      onPress={() => {
+                        const newGroups = [...groups];
+                        newGroups[index].count++;
+                        setGroups(newGroups);
+                      }}
+                    >
+                      <Ionicons
+                        name="add-circle-outline"
+                        size={26}
+                        color={Colors.grey}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              ))}
+            </Animated.View>
+          </>
         )}
       </View>
 
@@ -274,6 +359,16 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: Colors.grey,
   },
+  cardGuestItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingVertical: 16,
+  },
+  cardItemBorder: {
+    borderBottomColor: "#ABABAB",
+    borderBottomWidth: 1,
+  }
 });
 
 export default Page;
