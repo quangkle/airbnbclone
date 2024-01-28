@@ -1,4 +1,12 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import React, { useState } from "react";
 import { BlurView } from "expo-blur";
 import Animated, {
@@ -10,6 +18,7 @@ import { defaultStyles } from "@/constants/Styles";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import Colors from "@/constants/Colors";
+import { places } from "@/assets/data/places";
 
 const AnimatedTouchableOpacity =
   Animated.createAnimatedComponent(TouchableOpacity);
@@ -40,11 +49,61 @@ const Page = () => {
         )}
 
         {openCard === 0 && (
-          <Animated.View>
+          <>
             <Animated.Text entering={FadeIn} style={styles.cardHeader}>
               Where to?
             </Animated.Text>
-          </Animated.View>
+            <Animated.View style={styles.cardBody}>
+              <View style={styles.cardSearchSection}>
+                <Ionicons
+                  style={styles.cardSearchIcon}
+                  name="ios-search"
+                  size={20}
+                />
+                <TextInput
+                  style={styles.cardTextInput}
+                  placeholder="Search destination"
+                  placeholderTextColor={Colors.grey}
+                ></TextInput>
+              </View>
+
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.cardScrollView}
+              >
+                {places.map((item, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    onPress={() => setSelectedPlace(index)}
+                  >
+                    <View
+                      style={{ flexDirection: "column", alignItems: "center" }}
+                    >
+                      <Image
+                        source={item.img}
+                        style={
+                          selectedPlace === index
+                            ? styles.selectedCardPlace
+                            : styles.cardPlace
+                        }
+                      />
+                      <Text
+                        style={[
+                          { paddingTop: 6 },
+                          selectedPlace === index
+                            ? { fontFamily: "mon-sb" }
+                            : { fontFamily: "mon" },
+                        ]}
+                      >
+                        {item.title}
+                      </Text>
+                    </View>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            </Animated.View>
+          </>
         )}
       </View>
 
@@ -167,6 +226,43 @@ const styles = StyleSheet.create({
     fontFamily: "mon-sb",
     fontSize: 24,
     padding: 20,
+  },
+  cardBody: {
+    paddingHorizontal: 20,
+    paddingBottom: 20,
+  },
+  cardSearchSection: {
+    height: 50,
+    flexDirection: "row",
+    borderWidth: 1,
+    borderColor: "#ABABAB",
+    borderRadius: 8,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  cardTextInput: {
+    flex: 1,
+    padding: 10,
+    backgroundColor: "#fff",
+  },
+  cardSearchIcon: {
+    padding: 10,
+  },
+  cardScrollView: {
+    gap: 25,
+  },
+  cardPlace: {
+    width: 140,
+    height: 140,
+    borderRadius: 10,
+  },
+  selectedCardPlace: {
+    width: 140,
+    height: 140,
+    borderRadius: 10,
+    borderWidth: 2,
+    borderColor: Colors.grey,
   },
 });
 
