@@ -1,4 +1,5 @@
-## Airbnb clone app
+## Airbnb clone
+A React Expo app with some main features and styling of airbnb.
 
 ## Screenshots
 ![1](https://github.com/quangkle/airbnbclone/assets/150883573/d0d5fba8-8a7f-4cb4-a824-e04e107aa433)
